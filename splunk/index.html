@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Splunk App Dev Contest Entry: Splunk for Your Car</title>
+	<style type="text/css">
+		body { font-family: "Arial", serif; font-size: 18pt; width: 85%; margin:  0 auto; line-height: 1.6em }
+		#about { width: 800px; border-collapse: collapse; }
+		#about th { text-align: left; vertical-align: top; width: 280px; background: #eee }
+		#about th, #about td { padding: 5px 10px; border: 1px solid #ccc; }
+
+		a img { border: 1px solid #fff; border-radius: 5px; margin: 5px }
+		a:hover img { background: #c9e1fa; border: 1px solid #2e86e6 }
+
+		.image-full img { width: 100%; }
+		.image-left img { float: left; width: 50%; margin-right: 20px }
+		.image-right img { float: right; width: 50%; }
+		.image-small img { width: 250px; }
+		.image-double { text-align:  center }
+		.image-double img { width: 30%; }
+
+		h1, h2 { clear: both; }
+
+		h2 { background: #4497e9; padding: 10px; color: #fff; border-bottom: 5px solid #0d4c93 ;}
+		small { display: block; font-size: 11pt; line-height: 1.1em; padding-bottom: 20px }
+		ul { margin: 5px 0 5px 35px; padding: 0; }
+		li table { font-size: 12pt; border-collapse: collapse; }
+		li table td, li table th { border: 1px solid #ccc; padding: 2px 5px; }
+		li table th { background: #eee }
+		pre { font-size: 16px; line-height: 1em }
+
+		#video iframe { width: 100%; height: 700px;}
+
+		#pids { border-collapse: collapse; font-size: 12pt; width: 100%; margin-bottom: 25px }
+		#pids td, #pids th { border: 1px solid #ccc; padding: 2px; }
+		#pids th { background: #eee }
+
+	</style>
+</head>
+<body>
+
+	<h1>Splunk App Dev Contest Entry</h1>
+	<ol>
+		<li><a href="#project">Project Overview: Splunk for Your Car</a></li>
+		<li><a href="#technical">Technical Information</a></li>
+		<li><a href="#what-we-learned">What We Learned</a></li>
+	</ol>
+ 	<div id="video">
+		<iframe src="//www.youtube.com/embed/FpXckQSIMkk" frameborder="0" allowfullscreen></iframe>
+	</div>
+	<table id="about">
+		<tr><th>Submission Date</th><td>August 29th 2013</td></tr>
+		<tr><th>Authors</th><td>
+			<ul>
+				<li>Rich Acosta (<a href="http://twitter.com/Ricapar">@Ricapar</a>,
+						<a href="http://www.linkedin.com/in/richacosta">LinkedIn</a>,
+						<a href="http://answers.splunk.com/users/141150/ricapar">Splunk</a>)
+					<small>UNIX Admin by day, Web dev by night. Resident Splunk ninja.</small>
+				</li>
+				<li>Erica Feldman (<a href="http://www.linkedin.com/in/ericafeldman">LinkedIn</a>,<a href="http://answers.splunk.com/users/190354/efeldman4">Splunk</a>)
+					<small>IT Security and SIEM admin by day, mistress of awesome project ideas 24-7.</small>
+				</li>
+		</td></tr>
+		<tr><th>APIs and SDKs Used</th>
+		<td>
+			<ul>
+				<li><a href="http://developer.android.com/sdk/index.html">Android SDK</a></li>
+				<li><a href="https://www.dropbox.com/developers/sync‎">Dropbox Sync API for Android</a></li>
+				<li><a href="https://developers.google.com/maps/documentation/javascript/">Google Maps JavaScript API v3</a></li>
+				<li>Splunk Advanced XML</li>
+				<li>Splunk Custom Module Framework</li>
+				<li><a href="http://torque-bhp.com/wiki/PluginDocumentation">Torque Pro Plugin API</a></li>
+			</ul>
+		</td>
+		</tr>
+
+	</table>
+
+	<hr />
+
+	<h1><a name="project"></a>Splunk for Your Car</h1>
+
+
+	<h2>Project Goals</h2>
+	<p>
+		When we were envisioning ideas for a Splunk app, we knew immediately that we wanted to create
+		something that everyone could use.  We looked around our place and realized that the thing we,
+		and many others, use most is <strong>our car</strong>.</p>
+	<p>
+		Wouldn't it be great, we thought, if we knew what our car was doing when we drove it? Or how well
+		do we drive day to day? That's what we set out to do with this project.</p>
+
+	<h2>Your car, your data, your Splunk</h2>
+	<div class="image-left image-small"><img src="img/obd2.png" /></div>
+
+	<p>
+		Using just an Android phone and an inexpensive OBD2 Bluetooth adapter, the <em>Splunk for Your Car</em>
+		application is able to display rich information and statistics about your vehicle's trips. Unlike other
+		"Black Box"-like loggers for your car which communicate with online services or are provided by your
+		insurance company, since this is something you can set up yourself, you have the peace of mind that the data you're logging
+		won't be used by a third party, possibly against you.</p>
+
+	<p>Your insurance company doesn't need to know where you drive. Or what neighborhoods you frequent. Or that you hit
+		120 MPH on the interstate at 2AM.</p>
+
+	<p>It's your car, your data, and your Splunk instance.</p>
+
+
+
+	<h2>Weekly Statistics</h2>
+	<p>When you open up Splunk, the application opens up to a dashboard displaying your last week's worth
+		of driving activity.</p>
+
+	<p>Along the top are four summarized metrics for the week's trips:</p>
+		<div class="image-right">
+			<a href="img/dashboard_home.png"><img src="img/dashboard_home.png" /></a>
+		</div>
+
+	<ul>
+		<li>The <a href="#GreenScore"><strong>Green Score</strong></a>, a metric calculated from several variables and patterns
+			within each logged trip that represents how efficient your driving is.</li>
+		<li><strong>Average Speed</strong> across all the logged trips.</li>
+		<li>The <strong>Maximum Speed</strong> reached across any trip in the past week.</li>
+		<li>Total <strong>Time Spent Driving</strong> throughout the last week.</li>
+	</ul>
+
+	<p>In the second row are three additional panels:</p>
+	<ul>
+		<li><strong>Time Spent Driving</strong> displays a day-by-day view of how many hours were
+			driven throughout each day the past week.</li>
+		<li><strong>Distance Driven</strong> displays a day-by-day view of how many miles were
+			driven throughout each day the past week.</li>
+		<li><strong>Speed Range Distribution</strong> displays, as a percentage, how much time was spent driving
+			between the 0-20 MPH, 20-40 MPH, 40-60 MPH, and 60+ MPH ranges. The 40-60 MPH range is colored green,
+			indicating that it is the most energy-efficient speed range to maintain. Likewise, "city speeds" of 0-20 MPH
+			are colored red, as it is usally not energy efficient to be driving at such low speeds.</li>
+	</ul>
+
+	<p>At the bottom of the dashboard is a table displaying information for all of the trips that have been logged
+		to Splunk so far. By clicking on a row in the table, you are able to drill-down to display information
+		about just that one trip.</p>
+
+
+	<h2>Trip View</h2>
+	<div class="image-right">
+		<a href="img/dashboard_trip.png"><img src="img/dashboard_trip.png" /></a>
+	</div>
+	<p>The drill-down Trip View presents you with detailed information about the logged trip.</p>
+	<p>Along the top, you're presented with the start and end times of the trip, the total distance travelled,
+		and the amount of time spent driving.</p>
+	<p>The second row presents several gauges displaying information on the average and maximum values for
+		the trip's speed and RPMs. In the center of this row is the <a href="#GreenScore">Green Score</a>
+		achieved for the trip.</p>
+	<p>Contiuning downward are graphs displaying the vehicle's logged speed, RPMs, engine load, and activity
+		over time.</p>
+
+	<p>On the right-hand side is a trip map that outlines the path followed by the vehicle over the course of
+		the trip. The different path colors follow the same color scheme as the Speed Range Distribution
+		chart on the Weekly Summary dashboard.</p>
+
+
+	<hr />
+	<h1><a name="technical"></a>Technical Information</h1>
+
+	<h2>Overview of APIs and SDKs Used</h2>
+	<h3>Android SDK</h3>
+	<p>The Android SDK was used to develop a small Android App that plugs into Torque Pro's API in order
+		to extract data coming out of the OBD2 bluetooth adapter.</p>
+	<h3>Dropbox Sync API</h3>
+	<p>The Dropbox Sync API was used within the Android app as a means of transferring data from the mobile
+		device over to a computer running Splunk.</p>
+
+	<h3>Splunk Advanced XML</h3>
+	<p>In order to acheive the desired look and feel of the app, of the dashboards were created using Splunk's
+		Advanced XML dashboard markup, with additional customization done using JavaScript and CSS.</p>
+
+	<h3>Splunk Custom Module Framework + Google Maps JavaScript API v3</h3>
+	<p>We initially attempted to use the <a href="http://apps.splunk.com/app/368">Google Maps</a> app 
+		found on Splunk Base, but found that it did not fullfill our needs within this application. Using
+		Splunk's Python and JavaScript application framework, we created a new module that uses the Google
+		Maps API to display the map as shown in the Trip View dashboard.</p>
+
+	<h2><em>Not</em> always on</h2>
+	<p>If you're running Splunk in your company, you most likely have a dedicated set of machines for all your
+		Splunk-ing. However, for personal use, this isn't always feasable. If you're using a laptop as your
+		primary home computer, there's a good chance that your Splunk instance won't be available 24/7.</p>
+	<p>However, using the Dropbox Sync API, we're able to write data from your Android device to your Dropbox
+		account. The idea is that you can have your Splunk Indexer (any laptop or desktop running Splunk) also
+		run Dropbox (which you're probably already doing). You then point Splunk to the directory in your Dropbox
+		folder where the Android app is writing to.</p>
+	<p>As soon as your computer comes back online, it'll sync any new files down from Dropbox, which Splunk will then
+		automatically index.</p>
+
+	<h2 id="GreenScore">The Green Score<a name="GreenScore"></a></h2>	
+	<p>One of the goals we had for this project was to not only to log the car's activity, but to be able
+		to gauge how well we were driving. For this purpose, we developed an algorithm called the "Green Score".</p>
+	<p>By looking at your Green Score for an individual trip, or your weekly average, you're able to gauge how
+		fuel efficent your route and driving habits are.</p>
+
+	<p>The algorithm for the Green Score for a specific trip is as follows:</p>
+	<blockquote>
+	<ol>
+		<li>Start with a score of 100 Points</li>
+		<li>Subtract <code>avg(Engine_Load)</code> Points</li>
+		<li>Take the length of the trip, and sub-divide it into 5% intervals (20 total sections).
+			For each section, take the <code>avg(Speed)</code>, and adjust the score based on
+			the table below:
+			<table>
+				<tr> <th>Speed Range (MPH)</th><th>Points</th> </tr>
+				<tr><td>Speed &lt; 35</td><td>0 Points</th></tr>
+				<tr><td>35 &lt; Speed &lt; 40</td><td>+0.5 Points</th></tr>
+				<tr><td>40 &lt; Speed &lt; 50</td><td>+1 Point</th></tr>
+				<tr><td>50 &lt; Speed &lt; 60</td><td>+2 Points</th></tr>
+				<tr><td>60 &lt; Speed &lt; 70</td><td>+1 Point</th></tr>
+				<tr><td>70 &lt; Speed &lt; 80</td><td>0 Points</th></tr>
+				<tr><td>80 &lt; Speed &lt; 90</td><td>-1 Point</th></tr>
+				<tr><td>90 &lt; Speed &lt; 100</td><td>-2 Points</th></tr>
+				<tr><td>Speed &gt; 100</td><td>-5 Points</th></tr>
+			</table>
+		</li>
+	</ol>
+	</blockquote>
+	<p>Using Engine Load as a base for the score penalizes the final score appropriately since the load
+	on the engine is dependant on the driver's driving style (light vs heavy foot), and the route's terrian (uphill, flat, downhill, etc). Points are then awarded back based on how often you were in certain speed categories throughout the trip. This allows for then rewarding the driver back some points if he or she is driving at a speed where the vehicle's aerodynamics are most in its favor.</p> 
+
+	<h2>Torque Pro Splunk Plugin</h2>
+	<p><a href="https://play.google.com/store/apps/details?id=org.prowl.torque">Torque Pro</a>, an Android app by Ian Hawkins,
+		provides an excellent visualization of the real-time data that is coming out of your car's OBD2 port. The app also provides a plugin API that allows a developer to write an Android application that can attach to the same data source the Torque Pro app sees.</p>
+	<p>Using this plugin API, we wrote our own mini Android app that logs the real-time data in a Splunk-friendly format, as
+		shown below.</p>
+	<pre>2013-08-16 17:12:41.457 [1612 trip_uuid=0051710e] pid="12" pid_name="Engine RPM" Engine_RPM="1579.0" units="rpm"
+2013-08-16 17:12:41.457 [1612 trip_uuid=0051710e] pid="13" pid_name="Speed (OBD)" Speed__OBD="13.0" units="km/h"</pre>
+	<p>We're currently utilizing the Dropbox Sync API as previously mentioned, but the app was architectured in a way that
+		it could easily log to the SD Card or to a REST API (yes, we tested with Splunk Storm's REST API - it works!).
+
+	<p>Below is a list of some the <a href="http://en.wikipedia.org/wiki/OBD-II_PIDs">PIDs</a> being collected and logged to Splunk.</p>
+	<table id="pids">
+		<tr><th>pid</th><th>pid_name</th><th>units</th></tr>
+		<tr><td>4</td><td>Engine Load</td><td>%</td></tr>
+		<tr><td>12</td><td>Engine RPM</td><td>rpm</td></tr>
+		<tr><td>13</td><td>Speed (OBD)</td><td>km/h</td></tr>
+		<tr><td>15</td><td>Intake Air Temperature</td><td>&deg;C</td></tr>
+		<tr><td>16</td><td>Mass Air Flow Rate</td><td>g/s</td></tr>
+		<tr><td>17</td><td>Throttle Position(Manifold)</td><td>%</td></tr>
+		<tr><td>47</td><td>Fuel Level (From Engine ECU)</td><td>%</td></tr>
+		<tr><td>69</td><td>Relative Throttle Position</td><td>%</td></tr>
+		<tr><td>16715777</td><td>Speed (GPS)</td><td>km/h</td></tr>
+		<tr><td>16715781</td><td>GPS Longitude</td><td>&deg;</td></tr>
+		<tr><td>16715782</td><td>GPS Latitude</td><td>&deg;</td></tr>
+		<tr><td>16715783</td><td>GPS Bearing</td><td></td></tr>
+		<tr><td>16715792</td><td>GPS Altitude</td><td>m</td></tr>
+		<tr><td>16716289</td><td>Miles Per Gallon(Instant)</td><td>mpg</td></tr>
+		<tr><td>16716292</td><td>Trip Distance</td><td>km</td></tr>
+	</table>
+
+	<div class="image-double">
+		<img src="img/torque.png" />
+		<img src="img/torque_splunk.png" />
+	</div>
+
+	<hr />
+	<h1><a name="what-we-learned"></a>What We Learned</h1>
+
+	<p>From the start, we knew this project was going to be a learning expirence, no matter what the outcome.</p>
+	<p>We learned....</p>
+	<ul>
+		<li>Modern cars are extremely complicated computers with wheels attached. Due to government intervention, protocols
+			like OBD2 give us insight into what's going on under the hood. Unfortunately, a lot of what you could
+			potentially extract through the OBD2 port is still locked away and only accessible via propritary software
+			from vehicle manufacturers. However, the SAE OBD2 spec gives us a lot to work with.</li>
+		<li>A good bit of Android development! While we both have a good feel for Java, with the exception of
+			one small app, neither of us had worked all that much with the Android SDK.</li>
+
+		<li>Moving data from mobile devices through the network is difficult. You have to code for an extremely
+			unreliable connection that can drop off without notice. This is even more noticeable if you're trying
+			to send data actively while driving. This is what led us to use the Dropbox Sync API.</li>
+
+		<li>How to make custom modules in Splunk. Between the two of us, we had a solid background in
+			using Splunk for basic things. However, when it came to using the custom module framework...
+			the documentation appeared to be very daunting at first. But after diving into the deep-end
+			with some sample code, it wasn't bad at all. This also included improving our JavaScript
+			skills and brushing up on Python.</li>
+
+		<li>How to use Advanced XML in Splunk! Pretty much the same story here as with the custom module framework.</li>
+
+		<li>How to make videos! All those people on YouTube make it look so easy. Gotta get the lighting right.. the audio
+			right.. Get over you thinking your voice sounds terrible...
+			Find some decent background music that won't get you hit with a DMCA takedown.. Figure out how to work
+			iMovie.. give up on iMovie and figure out Final Cut Pro X. The list goes on! As with most things though, 
+			after trying and trying and finally getting somewhere, it was a rather fun experience.</li>
+		<li>No one drives the speed limit on the Garden State Parkway.</li>
+		<li>Laptops get really hot when running Splunk.</li>
+
+
+	</ul>
+	<script type="text/javascript">
+
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-31086698-1']);
+	  _gaq.push(['_setDomainName', 'ricapar.net']);
+	  _gaq.push(['_trackPageview']);
+
+	  (function() { 
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+
+	</script>
+
+</body>
+</html>
